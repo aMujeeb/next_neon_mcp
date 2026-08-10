@@ -9,16 +9,16 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import type { MockWorkout } from "@/lib/mock-data"
+import type { WorkoutWithDetails } from "@/data/workouts"
 
-function formatTimeRange(startAt: string, endAt: string | null) {
-  const start = format(new Date(startAt), "HH:mm")
+function formatTimeRange(startAt: Date, endAt: Date | null) {
+  const start = format(startAt, "HH:mm")
   if (!endAt) return `${start} – In progress`
-  const end = format(new Date(endAt), "HH:mm")
+  const end = format(endAt, "HH:mm")
   return `${start} – ${end}`
 }
 
-export function WorkoutListItem({ workout }: { workout: MockWorkout }) {
+export function WorkoutListItem({ workout }: { workout: WorkoutWithDetails }) {
   return (
     <Card>
       <CardHeader>
@@ -31,20 +31,26 @@ export function WorkoutListItem({ workout }: { workout: MockWorkout }) {
         {workout.notes ? (
           <p className="text-sm text-muted-foreground">{workout.notes}</p>
         ) : null}
-        {workout.exercises.map((exercise, index) => (
-          <div key={exercise.id} className="flex flex-col gap-2">
+        {workout.workoutExercises.map((workoutExercise, index) => (
+          <div key={workoutExercise.id} className="flex flex-col gap-2">
             {index > 0 ? <Separator /> : null}
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-sm font-medium">{exercise.name}</span>
-              {exercise.muscleGroup ? (
-                <Badge variant="secondary">{exercise.muscleGroup}</Badge>
+              <span className="text-sm font-medium">
+                {workoutExercise.exercise.name}
+              </span>
+              {workoutExercise.exercise.muscleGroup ? (
+                <Badge variant="secondary">
+                  {workoutExercise.exercise.muscleGroup}
+                </Badge>
               ) : null}
-              {exercise.equipment ? (
-                <Badge variant="outline">{exercise.equipment}</Badge>
+              {workoutExercise.exercise.equipment ? (
+                <Badge variant="outline">
+                  {workoutExercise.exercise.equipment}
+                </Badge>
               ) : null}
             </div>
             <div className="flex flex-wrap gap-1.5">
-              {exercise.sets.map((set) => (
+              {workoutExercise.sets.map((set) => (
                 <Badge key={set.id} variant={set.isWarmup ? "outline" : "default"}>
                   {set.isWarmup ? "Warmup · " : ""}
                   {set.reps} × {set.weight}
