@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ClerkProvider, Show, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs'
 import { Plus } from "lucide-react";
@@ -35,7 +36,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               </SignUpButton>
             </Show>
             <Show when="signed-in">
-              <Button variant="default">
+              <Button
+                variant="default"
+                nativeButton={false}
+                render={<Link href="/dashboard/workout/new" />}
+              >
                 <Plus />
                 Log Workout
               </Button>
