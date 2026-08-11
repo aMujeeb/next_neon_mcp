@@ -1,6 +1,22 @@
 import "server-only";
 import db from "@/db";
+import { workouts } from "@/db/schema";
 import { requireUserId } from "@/data/auth";
+
+export async function createWorkout(input: {
+  name?: string;
+  performedStartAt: Date;
+  notes?: string;
+}) {
+  const clerkUserId = await requireUserId();
+
+  const [workout] = await db
+    .insert(workouts)
+    .values({ ...input, clerkUserId })
+    .returning();
+
+  return workout;
+}
 
 export async function getWorkoutsForDate(date: Date) {
   const clerkUserId = await requireUserId();
