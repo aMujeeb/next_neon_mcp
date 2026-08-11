@@ -10,7 +10,7 @@ export const relations = defineRelations(schema, (r) => ({
   },
   workoutExercises: {
     workout: r.one.workouts({ from: r.workoutExercises.workoutId, to: r.workouts.id }),
-    exercise: r.one.exercises({ from: r.workoutExercises.exerciseId, to: r.exercises.id }),
+    exercise: r.one.exercises({ from: r.workoutExercises.exerciseId, to: r.exercises.id, optional: false }),
     sets: r.many.sets(),
   },
   sets: {
