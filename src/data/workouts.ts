@@ -1,4 +1,5 @@
 import "server-only";
+import { and, eq } from "drizzle-orm";
 import db from "@/db";
 import { workouts } from "@/db/schema";
 import { requireUserId } from "@/data/auth";
@@ -13,6 +14,36 @@ export async function createWorkout(input: {
   const [workout] = await db
     .insert(workouts)
     .values({ ...input, clerkUserId })
+    .returning();
+
+  return workout;
+}
+
+export async function getWorkoutById(workoutId: string) {
+  const clerkUserId = await requireUserId();
+
+  return db.query.workouts.findFirst({
+    where: {
+      id: workoutId,
+      clerkUserId,
+    },
+  });
+}
+
+export async function updateWorkout(
+  workoutId: string,
+  input: {
+    name?: string;
+    performedStartAt: Date;
+    notes?: string;
+  }
+) {
+  const clerkUserId = await requireUserId();
+
+  const [workout] = await db
+    .update(workouts)
+    .set({ ...input, updatedAt: new Date() })
+    .where(and(eq(workouts.id, workoutId), eq(workouts.clerkUserId, clerkUserId)))
     .returning();
 
   return workout;
