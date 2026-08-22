@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { format } from "date-fns"
-import { Pencil } from "lucide-react"
+import { Eye, Pencil } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import type { WorkoutWithDetails } from "@/data/workouts"
+import { isWorkoutEditable } from "@/lib/workout"
 
 function formatTimeRange(startAt: Date, endAt: Date | null) {
   const start = format(startAt, "HH:mm")
@@ -23,6 +24,8 @@ function formatTimeRange(startAt: Date, endAt: Date | null) {
 }
 
 export function WorkoutListItem({ workout }: { workout: WorkoutWithDetails }) {
+  const canEdit = isWorkoutEditable(workout.performedStartAt)
+
   return (
     <Card>
       <CardHeader>
@@ -30,16 +33,27 @@ export function WorkoutListItem({ workout }: { workout: WorkoutWithDetails }) {
         <CardDescription>
           {formatTimeRange(workout.performedStartAt, workout.performedEndAt)}
         </CardDescription>
-        <CardAction>
+        <CardAction className="flex gap-1">
           <Button
             variant="ghost"
             size="icon"
-            aria-label="Edit workout"
+            aria-label="View workout"
             nativeButton={false}
             render={<Link href={`/dashboard/workout/${workout.id}`} />}
           >
-            <Pencil />
+            <Eye />
           </Button>
+          {canEdit ? (
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Edit workout"
+              nativeButton={false}
+              render={<Link href={`/dashboard/workout/${workout.id}/edit`} />}
+            >
+              <Pencil />
+            </Button>
+          ) : null}
         </CardAction>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
