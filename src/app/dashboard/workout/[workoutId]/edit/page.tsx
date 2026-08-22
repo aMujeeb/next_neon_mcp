@@ -1,7 +1,8 @@
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 
 import { listExercises } from "@/data/exercises"
 import { getWorkoutById } from "@/data/workouts"
+import { isWorkoutEditable } from "@/lib/workout"
 import { AddExerciseForm } from "./_components/add-exercise-form"
 import { EditWorkoutForm } from "./_components/edit-workout-form"
 import { WorkoutExerciseCard } from "./_components/workout-exercise-card"
@@ -17,6 +18,10 @@ export default async function EditWorkoutPage(
   ])
   if (!workout) {
     notFound()
+  }
+
+  if (!isWorkoutEditable(workout.performedStartAt)) {
+    redirect(`/dashboard/workout/${workoutId}`)
   }
 
   return (

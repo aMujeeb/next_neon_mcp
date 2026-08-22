@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { getWorkoutById } from "@/data/workouts"
+import { isWorkoutEditable } from "@/lib/workout"
 
 function formatTimeRange(startAt: Date, endAt: Date | null) {
   const start = format(startAt, "HH:mm")
@@ -29,6 +30,8 @@ export default async function WorkoutDetailPage(
   if (!workout) {
     notFound()
   }
+
+  const canEdit = isWorkoutEditable(workout.performedStartAt)
 
   return (
     <div className="mx-auto flex w-full max-w-lg flex-col gap-6 p-4 sm:p-6">
@@ -56,14 +59,16 @@ export default async function WorkoutDetailPage(
             {formatTimeRange(workout.performedStartAt, workout.performedEndAt)}
           </p>
         </div>
-        <Button
-          variant="outline"
-          nativeButton={false}
-          render={<Link href={`/dashboard/workout/${workout.id}/edit`} />}
-        >
-          <Pencil />
-          Edit
-        </Button>
+        {canEdit ? (
+          <Button
+            variant="outline"
+            nativeButton={false}
+            render={<Link href={`/dashboard/workout/${workout.id}/edit`} />}
+          >
+            <Pencil />
+            Edit
+          </Button>
+        ) : null}
       </header>
 
       {workout.notes ? (
