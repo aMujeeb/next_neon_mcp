@@ -27,6 +27,17 @@ export async function getWorkoutById(workoutId: string) {
       id: workoutId,
       clerkUserId,
     },
+    with: {
+      workoutExercises: {
+        orderBy: { order: "asc" },
+        with: {
+          exercise: true,
+          sets: {
+            orderBy: { setNumber: "asc" },
+          },
+        },
+      },
+    },
   });
 }
 
@@ -81,3 +92,5 @@ export async function getWorkoutsForDate(date: Date) {
 }
 
 export type WorkoutWithDetails = Awaited<ReturnType<typeof getWorkoutsForDate>>[number];
+export type WorkoutExerciseDetail = WorkoutWithDetails["workoutExercises"][number];
+export type SetDetail = WorkoutExerciseDetail["sets"][number];
