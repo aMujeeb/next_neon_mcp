@@ -4,6 +4,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ClerkProvider, Show, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs'
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeToggle } from "@/components/theme-toggle";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -23,32 +25,46 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');var d=t==='dark'||(t!=='light'&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d);}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col">
-        <ClerkProvider>
-          <header className="flex justify-end items-center p-4 gap-4 h-16">
-            <Show when="signed-out">
-              <SignInButton>
-                <Button variant="outline">Sign In</Button>
-              </SignInButton>
-              <SignUpButton>
-                <Button variant="default">Sign Up</Button>
-              </SignUpButton>
-            </Show>
-            <Show when="signed-in">
-              <Button
-                variant="default"
-                nativeButton={false}
-                render={<Link href="/dashboard/workout/new" />}
-              >
-                <Plus />
-                Log Workout
-              </Button>
-              <UserButton />
-            </Show>
-          </header>
-          {children}
-        </ClerkProvider>
+        <ThemeProvider>
+          <ClerkProvider>
+            <header className="flex justify-end items-center p-4 gap-4 h-16">
+              <Show when="signed-out">
+                <SignInButton>
+                  <Button variant="outline">Sign In</Button>
+                </SignInButton>
+                <SignUpButton>
+                  <Button variant="default">Sign Up</Button>
+                </SignUpButton>
+              </Show>
+              <Show when="signed-in">
+                <Button
+                  variant="default"
+                  nativeButton={false}
+                  render={<Link href="/dashboard/workout/new" />}
+                >
+                  <Plus />
+                  Log Workout
+                </Button>
+                <UserButton />
+              </Show>
+              <ThemeToggle />
+            </header>
+            {children}
+          </ClerkProvider>
+        </ThemeProvider>
       </body>
     </html>
   )
