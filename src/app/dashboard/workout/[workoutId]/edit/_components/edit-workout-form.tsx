@@ -118,7 +118,7 @@ export function EditWorkoutForm({
               variant="outline"
               disabled={isPending}
               nativeButton={false}
-              render={<Link href="/dashboard" />}
+              render={<Link href={`/dashboard/workout/${workoutId}`} />}
             >
               Cancel
             </Button>

@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { format } from "date-fns"
-import { Pencil } from "lucide-react"
+import { Eye, Pencil } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -30,13 +30,22 @@ export function WorkoutListItem({ workout }: { workout: WorkoutWithDetails }) {
         <CardDescription>
           {formatTimeRange(workout.performedStartAt, workout.performedEndAt)}
         </CardDescription>
-        <CardAction>
+        <CardAction className="flex gap-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="View workout"
+            nativeButton={false}
+            render={<Link href={`/dashboard/workout/${workout.id}`} />}
+          >
+            <Eye />
+          </Button>
           <Button
             variant="ghost"
             size="icon"
             aria-label="Edit workout"
             nativeButton={false}
-            render={<Link href={`/dashboard/workout/${workout.id}`} />}
+            render={<Link href={`/dashboard/workout/${workout.id}/edit`} />}
           >
             <Pencil />
           </Button>
